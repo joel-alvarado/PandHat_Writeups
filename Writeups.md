@@ -52,3 +52,8 @@ The letter `p` was the flag's value.
 
 ### Warmed Up: 
 This challenge is the same as the first step of `Lets Warm Up`. All we need to do is convert `0x3D` from hexadecimal to decimal. Using `wcalc -d 0x3D`, we get the number `61` as the flag's value.  
+
+## DownUnderCTF
+
+### downunderflow
+DUCTF provided a netcat server to connect to, as well as a C source code file that is being run in the server when you nc to it. Analyzing the source code, it is a login, and you can input a number on the terminal and login as a user from 0-6, and anything higher is invalid. While user 7 shows as admin, there is a condition that checks wether the input number is bigger than or equal to the amount of users - 1. Since admin was index 7, it is impossible to input user 7 (admin) without triggering the condition and getting locked out. Upon further inspection, the number is cast into a `unsigned short`, before attempting to log in with said number. What I did was underflow the number enough to where the number became a 7, which in this case was -65529. When entering this number as the login, the unsigned short underflows and becomes a 7, allowing us access to a an admin shell. Then I used ls to see the root directory, and there was a flag.txt file that contained the challenges flag.
